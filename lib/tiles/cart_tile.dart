@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hawks_shop/dao/product_dao.dart';
 import 'package:hawks_shop/datas/cart_product.dart';
 import 'package:hawks_shop/datas/product_data.dart';
 import 'package:hawks_shop/models/cart_model.dart';
@@ -12,13 +12,14 @@ class CartTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ProductDAO productDAO = ProductDAO();
     return Card(
       margin: EdgeInsets.symmetric(vertical: 4.0,horizontal: 8.0),
-      child: cartProduct.product == null ? FutureBuilder<DocumentSnapshot>(
-        future: Firestore.instance.collection("products").document(cartProduct.categoryId).collection("items").document(cartProduct.productId).get(),
+      child: cartProduct.product == null ? FutureBuilder<ProductData>(
+        future: productDAO.getProduct(categoryId: cartProduct.categoryId, productId: cartProduct.productId),
         builder: (context, snapshot){
           if(snapshot.hasData){
-            cartProduct.product = ProductData.fromFirebaseDocument(snapshot.data);
+            cartProduct.product = snapshot.data;
             return _buildContent(context);
           }else{
             return Container(

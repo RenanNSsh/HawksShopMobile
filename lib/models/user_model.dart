@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hawks_shop/dao/user_dao.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class UserModel extends Model{
@@ -8,6 +9,7 @@ class UserModel extends Model{
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser firebaseUser;
   Map<String, dynamic> userData = Map();
+  final UserDAO _userDao = UserDAO();
 
   bool _isLoading = false;
 
@@ -66,9 +68,9 @@ class UserModel extends Model{
     return firebaseUser != null;
   }
 
-  Future<Null> _saveUserData(Map<String, dynamic> userData) async{
+  Future<Null> _saveUserData(Map<String, dynamic> userData) {
     this.userData = userData;
-    await Firestore.instance.collection("users").document(firebaseUser.uid).setData(userData);
+    return _userDao.saveUserData(userId: firebaseUser.uid, userData: userData);
   }
 
   void signOut() async {
@@ -85,8 +87,7 @@ class UserModel extends Model{
     }
     if(firebaseUser != null){
       if(userData["name"] == null){
-        DocumentSnapshot docUser = await Firestore.instance.collection("users").document(firebaseUser.uid).get();
-        userData = docUser.data;
+        userData = await _userDao.getUser(userId: firebaseUser.uid);
       }
     }
     notifyListeners();

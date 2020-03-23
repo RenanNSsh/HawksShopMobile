@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hawks_shop/dao/cart_dao.dart';
 import 'package:hawks_shop/datas/cart_product.dart';
 import 'package:hawks_shop/models/user_model.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -11,6 +12,7 @@ class CartModel extends Model{
 
   String cuponCode;
   int discountPercentage = 0;
+  final CartDAO _cartDAO = CartDAO(); 
 
   List<CartProduct> products;
 
@@ -30,65 +32,49 @@ class CartModel extends Model{
 
   void _loadCartItens() async{
     if(products == null && user.isLoggedIn()){
-       QuerySnapshot docProducts = await Firestore.instance.collection("users")
-                                                  .document(user.firebaseUser.uid)
-                                                  .collection("cart")
-                                                  .getDocuments();
-      products = docProducts.documents.map((docProduct){
-        return CartProduct.fromDocument(docProduct);
-      }).toList();
+      products = await _cartDAO.getProducts(userId: user.firebaseUser.uid);
       notifyListeners();
     }
   }
 
-  void addCartItem(CartProduct cartProduct) async {
+  void addCartItem(CartProduct cartProduct) async{
     try{
-      CartProduct existingCartProduct = products.firstWhere((element )=>  element.productId == cartProduct.productId && element.size == cartProduct.size);
-      await incProduct(existingCartProduct);
+      CartProduct existingCartProduct = products.firstWhere((p) => _productExists(p,cartProduct));
+      incProduct(existingCartProduct);
     }catch(IterableElementError){
       products.add(cartProduct);
-      await Firestore.instance.collection("users")
-              .document(user.firebaseUser.uid)
-              .collection("cart")
-              .add(cartProduct.toMap()).then((doc){
-                cartProduct.cartId = doc.documentID;
-              });
+      cartProduct.cartId = await _cartDAO.addCartItem(userId: user.firebaseUser.uid, cartProduct: cartProduct);
       notifyListeners();
     }
   }
 
-  void removeCartItem(CartProduct cartProduct)async {
-    await Firestore.instance.collection("users")
-             .document(user.firebaseUser.uid)
-             .collection("cart")
-             .document(cartProduct.cartId).delete();
-    products.remove(cartProduct);
+  bool _productExists(CartProduct productList, CartProduct productSearch){
+    bool sameId = productList.productId == productSearch.productId;
+    bool sameSize = productList.size == productSearch.size;
+    return sameId && sameSize;
+  }
+
+  void incProduct(CartProduct cartProduct) async{
+    cartProduct.amount++;
+    await _cartDAO.updateProduct(userId: user.firebaseUser.uid, cartProduct: cartProduct);
     notifyListeners();
   }
 
-  void decProduct(CartProduct cartProduct) {
+  void decProduct(CartProduct cartProduct) async {
     cartProduct.amount--;
-    Firestore.instance.collection("users")
-             .document(user.firebaseUser.uid)
-             .collection("cart")
-             .document(cartProduct.cartId)
-             .updateData(cartProduct.toMap());
+    await _cartDAO.updateProduct(userId: user.firebaseUser.uid, cartProduct: cartProduct);
+    notifyListeners();
+  }
+
+  void removeCartItem(CartProduct cartProduct) async {
+    await _cartDAO.removeProduct(userId: user.firebaseUser.uid, cartProduct: cartProduct);
+    products.remove(cartProduct);
     notifyListeners();
   }
 
   void setCupom(String couponCode, int discountPercentage){
     this.cuponCode = couponCode;
     this.discountPercentage = discountPercentage;
-  }
-
-  void incProduct(CartProduct cartProduct) async{
-    cartProduct.amount++;
-    await Firestore.instance.collection("users")
-             .document(user.firebaseUser.uid)
-             .collection("cart")
-             .document(cartProduct.cartId)
-             .updateData(cartProduct.toMap());
-    notifyListeners();
   }
 
   double getProductsPrice(){ 
@@ -105,7 +91,6 @@ class CartModel extends Model{
     double discount = getProductsPrice() * discountPercentage / 100;
     notifyListeners();
     return discount;
-
   }
 
   double getShipPrice(){
@@ -137,11 +122,7 @@ class CartModel extends Model{
               {
                 "orderId": refOrder.documentID
               });
-    QuerySnapshot query = await Firestore.instance.collection("users").document(user.firebaseUser.uid).collection("cart").getDocuments();
-
-    for(DocumentSnapshot doc in query.documents){
-      doc.reference.delete();
-    }
+    await _cartDAO.removeProducts(userId: user.firebaseUser.uid);
 
     products.clear();
     discountPercentage = 0;

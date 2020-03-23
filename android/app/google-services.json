@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "798497580838",
+    "firebase_url": "https://hawksshop-7bf68.firebaseio.com",
+    "project_id": "hawksshop-7bf68",
+    "storage_bucket": "hawksshop-7bf68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798497580838:android:35561340da9f827d4743e7",
+        "android_client_info": {
+          "package_name": "br.com.hawks.hawks_shop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798497580838-5ktrl97km9e5ng5k91tqj5m8g67brsdl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTbOuh3NTNVOStG9TvAHSQGwFMZdZ_5Yo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798497580838-5ktrl97km9e5ng5k91tqj5m8g67brsdl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

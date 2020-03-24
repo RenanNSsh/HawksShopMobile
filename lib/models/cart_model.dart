@@ -3,6 +3,7 @@ import 'package:hawks_shop/dao/cart_dao.dart';
 import 'package:hawks_shop/dao/order_dao.dart';
 import 'package:hawks_shop/dao/user_dao.dart';
 import 'package:hawks_shop/datas/cart_product.dart';
+import 'package:hawks_shop/datas/cupon_data.dart';
 import 'package:hawks_shop/datas/order_data.dart';
 import 'package:hawks_shop/models/user_model.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -12,8 +13,7 @@ class CartModel extends Model{
   UserModel user;
   bool isLoading = false;
 
-  String cuponCode;
-  int discountPercentage = 0;
+  CuponData cupon = CuponData(cuponCode: null,percent: 0);
 
   final CartDAO _cartDAO = CartDAO(); 
   final OrderDAO _orderDAO = OrderDAO();
@@ -27,12 +27,6 @@ class CartModel extends Model{
 
   static CartModel of(BuildContext context){
     return ScopedModel.of<CartModel>(context);
-  }
-
-  @override
-  void addListener(listener) {
-    super.addListener(listener);
-    _loadCartItens();
   }
 
   void _loadCartItens() async{
@@ -77,9 +71,12 @@ class CartModel extends Model{
     notifyListeners();
   }
 
-  void setCupom(String couponCode, int discountPercentage){
-    this.cuponCode = couponCode;
-    this.discountPercentage = discountPercentage;
+  void setCupom(CuponData cupon){
+    if(cupon == null){
+      this.cupon = CuponData(cuponCode: '',percent: 0);
+    }else{
+      this.cupon = cupon;
+    }
   }
 
   double getProductsPrice(){ 
@@ -93,7 +90,7 @@ class CartModel extends Model{
   }
 
   double getDiscount(){
-    double discount = getProductsPrice() * discountPercentage / 100;
+    double discount = getProductsPrice() * cupon.percent / 100;
     notifyListeners();
     return discount;
   }
@@ -125,8 +122,7 @@ class CartModel extends Model{
     await _cartDAO.removeProducts(userId: user.firebaseUser.uid);
 
     products.clear();
-    discountPercentage = 0;
-    cuponCode = null;
+    cupon = CuponData(cuponCode: '',percent: 0);
     isLoading = false;
     notifyListeners();
 

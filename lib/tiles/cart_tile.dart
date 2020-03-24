@@ -15,7 +15,7 @@ class CartTile extends StatelessWidget {
     final ProductDAO productDAO = ProductDAO();
     return Card(
       margin: EdgeInsets.symmetric(vertical: 4.0,horizontal: 8.0),
-      child: cartProduct.product == null ? FutureBuilder<ProductData>(
+      child: cartProduct.product.images == null ? FutureBuilder<ProductData>(
         future: productDAO.getProduct(categoryId: cartProduct.categoryId, productId: cartProduct.productId),
         builder: (context, snapshot){
           if(snapshot.hasData){

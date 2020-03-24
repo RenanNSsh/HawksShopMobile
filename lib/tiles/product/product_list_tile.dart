@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hawks_shop/datas/product_data.dart';
+import 'package:hawks_shop/screens/product_screen.dart';
 
 class ProductListTile extends StatelessWidget {
   
@@ -10,7 +11,11 @@ class ProductListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){},
+      onTap: (){
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => ProductScreen(product))
+        );
+      },
       child: Card(
         child: Row(
           children: <Widget>[

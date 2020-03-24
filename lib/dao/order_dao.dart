@@ -18,9 +18,11 @@ class OrderDAO{
     Stream<DocumentSnapshot> firebaseOrders = Firestore.instance.collection("orders")
                                                                       .document(orderId)
                                                                       .snapshots();
-    Stream<OrderData> ordersData = firebaseOrders.map((order){
-      return OrderData.fromFirebaseDocument(order);
-    });
+    Stream<OrderData> ordersData = firebaseOrders.map(_firebaseOrderToOrderData);
     return ordersData;                         
+  }
+
+  OrderData _firebaseOrderToOrderData(DocumentSnapshot firebaseOrder){
+    return OrderData.fromFirebaseDocument(firebaseOrder);
   }
 }

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hawks_shop/datas/home_data.dart';
 
-class HomeDAO{
+class HomeService{
 
   final String _homeCollecion = "home";
 

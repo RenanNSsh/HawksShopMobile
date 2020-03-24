@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:hawks_shop/dao/cupon_dao.dart';
 import 'package:hawks_shop/models/cart_model.dart';
+import 'package:hawks_shop/services/cupon_service.dart';
 
 class DiscountCard extends StatelessWidget {
   const DiscountCard();
 
   @override
   Widget build(BuildContext context) {
-    CuponDAO cuponDAO = CuponDAO();
+    CuponService cuponService = CuponService();
     return Card(
       child: ExpansionTile(
         title: Text(
@@ -27,7 +27,7 @@ class DiscountCard extends StatelessWidget {
               ),
               initialValue: CartModel.of(context).cupon != null ? CartModel.of(context).cupon.cuponCode : "",
               onFieldSubmitted: (text){
-                cuponDAO.getCupon(text).then((cupon){
+                cuponService.getCupon(text).then((cupon){
                   if(cupon != null){
                     CartModel.of(context).setCupom(cupon);
                     Scaffold.of(context).showSnackBar(SnackBar(

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hawks_shop/datas/place_data.dart';
 
-class PlaceDAO{
+class PlaceService{
 
   final String _placesCollection = "places";
 

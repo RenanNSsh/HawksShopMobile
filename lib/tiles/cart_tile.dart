@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hawks_shop/dao/product_dao.dart';
 import 'package:hawks_shop/datas/cart_product.dart';
 import 'package:hawks_shop/datas/product_data.dart';
 import 'package:hawks_shop/models/cart_model.dart';
+import 'package:hawks_shop/services/product_service.dart';
 
 class CartTile extends StatelessWidget {
   
@@ -12,11 +12,11 @@ class CartTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ProductDAO productDAO = ProductDAO();
+    final ProductService productService = ProductService();
     return Card(
       margin: EdgeInsets.symmetric(vertical: 4.0,horizontal: 8.0),
       child: cartProduct.product.images == null ? FutureBuilder<ProductData>(
-        future: productDAO.getProduct(categoryId: cartProduct.categoryId, productId: cartProduct.productId),
+        future: productService.getProduct(categoryId: cartProduct.categoryId, productId: cartProduct.productId),
         builder: (context, snapshot){
           if(snapshot.hasData){
             cartProduct.product = snapshot.data;

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hawks_shop/dao/cart_dao.dart';
-import 'package:hawks_shop/dao/order_dao.dart';
-import 'package:hawks_shop/dao/user_dao.dart';
 import 'package:hawks_shop/datas/cart_product.dart';
 import 'package:hawks_shop/datas/cupon_data.dart';
 import 'package:hawks_shop/datas/order_data.dart';
 import 'package:hawks_shop/models/user_model.dart';
+import 'package:hawks_shop/services/cart_service.dart';
+import 'package:hawks_shop/services/order_service.dart';
+import 'package:hawks_shop/services/user_service.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class CartModel extends Model{
@@ -15,9 +15,9 @@ class CartModel extends Model{
 
   CuponData cupon = CuponData(cuponCode: null,percent: 0);
 
-  final CartDAO _cartDAO = CartDAO(); 
-  final OrderDAO _orderDAO = OrderDAO();
-  final UserDAO _userDAO = UserDAO();
+  final CartService _cartService = CartService(); 
+  final OrderService _orderService = OrderService();
+  final UserService _userService = UserService();
 
   List<CartProduct> products;
 
@@ -31,7 +31,7 @@ class CartModel extends Model{
 
   void _loadCartItens() async{
     if(products == null && user.isLoggedIn()){
-      products = await _cartDAO.getProducts(userId: user.firebaseUser.uid);
+      products = await _cartService.getProducts(userId: user.firebaseUser.uid);
       notifyListeners();
     }
   }
@@ -42,7 +42,7 @@ class CartModel extends Model{
       incProduct(existingCartProduct);
     }catch(IterableElementError){
       products.add(cartProduct);
-      cartProduct.cartId = await _cartDAO.addCartItem(userId: user.firebaseUser.uid, cartProduct: cartProduct);
+      cartProduct.cartId = await _cartService.addCartItem(userId: user.firebaseUser.uid, cartProduct: cartProduct);
       notifyListeners();
     }
   }
@@ -55,18 +55,18 @@ class CartModel extends Model{
 
   void incProduct(CartProduct cartProduct) async{
     cartProduct.amount++;
-    await _cartDAO.updateProduct(userId: user.firebaseUser.uid, cartProduct: cartProduct);
+    await _cartService.updateProduct(userId: user.firebaseUser.uid, cartProduct: cartProduct);
     notifyListeners();
   }
 
   void decProduct(CartProduct cartProduct) async {
     cartProduct.amount--;
-    await _cartDAO.updateProduct(userId: user.firebaseUser.uid, cartProduct: cartProduct);
+    await _cartService.updateProduct(userId: user.firebaseUser.uid, cartProduct: cartProduct);
     notifyListeners();
   }
 
   void removeCartItem(CartProduct cartProduct) async {
-    await _cartDAO.removeProduct(userId: user.firebaseUser.uid, cartProduct: cartProduct);
+    await _cartService.removeProduct(userId: user.firebaseUser.uid, cartProduct: cartProduct);
     products.remove(cartProduct);
     notifyListeners();
   }
@@ -116,10 +116,10 @@ class CartModel extends Model{
         "totalPrice": productsPrice - discount + shipPrice,
         "status": 1
       });
-    String orderId = await _orderDAO.addOrder(orderData: orderData);
+    String orderId = await _orderService.addOrder(orderData: orderData);
 
-    await _userDAO.saveOrder(userId: user.firebaseUser.uid, orderId: orderId);
-    await _cartDAO.removeProducts(userId: user.firebaseUser.uid);
+    await _userService.saveOrder(userId: user.firebaseUser.uid, orderId: orderId);
+    await _cartService.removeProducts(userId: user.firebaseUser.uid);
 
     products.clear();
     cupon = CuponData(cuponCode: '',percent: 0);

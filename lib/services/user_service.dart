@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class UserDAO{
+class UserService{
 
   final String _userCollection = "users";
   final String _orderCollection = "orders";

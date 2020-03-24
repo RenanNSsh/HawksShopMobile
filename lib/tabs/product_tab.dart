@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:hawks_shop/dao/category_dao.dart';
 import 'package:hawks_shop/datas/category_data.dart';
+import 'package:hawks_shop/services/category_service.dart';
 import 'package:hawks_shop/tiles/category_tile.dart';
 
 class ProductTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CategoryDAO categoryDAO = CategoryDAO();
+    final CategoryService categoryService = CategoryService();
     return FutureBuilder<List<CategoryData>>(
-      future: categoryDAO.getCategories(),
+      future: categoryService.getCategories(),
       builder: (context, snapshot){
         if(!snapshot.hasData){
           return Center(child: CircularProgressIndicator(),);

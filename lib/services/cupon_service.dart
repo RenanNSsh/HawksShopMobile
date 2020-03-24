@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hawks_shop/datas/cupon_data.dart';
 
-class CuponDAO{
+class CuponService{
 
   final String _cuponCollection = 'cupons';
 

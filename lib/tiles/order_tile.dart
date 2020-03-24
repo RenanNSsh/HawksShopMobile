@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hawks_shop/dao/order_dao.dart';
 import 'package:hawks_shop/datas/cart_product.dart';
 import 'package:hawks_shop/datas/order_data.dart';
+import 'package:hawks_shop/services/order_service.dart';
 
 class OrderTile extends StatelessWidget {
 
@@ -11,13 +11,13 @@ class OrderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    OrderDAO orderDAO = OrderDAO();
+    OrderService orderService = OrderService();
     return Card(
       margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
       child: Padding(
         padding: EdgeInsets.all(8.0),
         child: StreamBuilder<OrderData>(
-          stream: orderDAO.getStreamOrder(orderId: orderId),
+          stream: orderService.getStreamOrder(orderId: orderId),
           builder: (context,snapshot){
             if(!snapshot.hasData){
               return Center(

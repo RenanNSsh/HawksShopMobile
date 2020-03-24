@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:hawks_shop/dao/home_dao.dart';
 import 'package:hawks_shop/datas/home_data.dart';
+import 'package:hawks_shop/services/home_service.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class HomeTab extends StatelessWidget {
@@ -21,7 +21,7 @@ class HomeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HomeDAO homeDAO = HomeDAO();
+    HomeService homeService = HomeService();
     return Stack(
       children: <Widget>[
         _buildBodyBack(),
@@ -38,7 +38,7 @@ class HomeTab extends StatelessWidget {
               ),
             ),
             FutureBuilder<List<HomeData>>(
-              future: homeDAO.getHomeData(),
+              future: homeService.getHomeData(),
               builder: (context, snapshot){
                 if(!snapshot.hasData){
                   return SliverToBoxAdapter(

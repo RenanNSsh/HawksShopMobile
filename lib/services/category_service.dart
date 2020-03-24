@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hawks_shop/datas/category_data.dart';
 
-class CategoryDAO{
+class CategoryService{
 
   final String  _collection = "products";
   

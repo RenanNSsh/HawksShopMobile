@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hawks_shop/datas/cart_product.dart';
 
-class CartDAO{
+class CartService{
 
   final String _userCollection = "users";
   final String _cartCollection = "cart";

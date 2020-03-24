@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hawks_shop/dao/user_dao.dart';
 import 'package:hawks_shop/models/user_model.dart';
 import 'package:hawks_shop/screens/login_screen.dart';
 import 'package:hawks_shop/tiles/order_tile.dart';
@@ -9,11 +9,12 @@ class OrdersTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserDAO userDAO = UserDAO();
     if(UserModel.of(context).isLoggedIn()){
-      String uid = UserModel.of(context).firebaseUser.uid;
+      String userId = UserModel.of(context).firebaseUser.uid;
       
-      return FutureBuilder<QuerySnapshot>(
-        future: Firestore.instance.collection("users").document(uid).collection("orders").getDocuments(),
+      return FutureBuilder<List<String>>(
+        future: userDAO.getOrders(userId: userId),
         builder: (context, snapshot){
           if(!snapshot.hasData){
             return Center(
@@ -21,8 +22,8 @@ class OrdersTab extends StatelessWidget {
             );
           }
           return ListView(
-            children: snapshot.data.documents.map((docOrder){
-              return OrderTile(docOrder.documentID);
+            children: snapshot.data.map((orderId){
+              return OrderTile(orderId);
             }
             ).toList().reversed.toList(),
           );

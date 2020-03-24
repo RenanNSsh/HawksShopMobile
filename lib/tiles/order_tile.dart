@@ -1,7 +1,7 @@
-import 'dart:collection';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hawks_shop/dao/order_dao.dart';
+import 'package:hawks_shop/datas/cart_product.dart';
+import 'package:hawks_shop/datas/order_data.dart';
 
 class OrderTile extends StatelessWidget {
 
@@ -11,23 +11,24 @@ class OrderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    OrderDAO orderDAO = OrderDAO();
     return Card(
       margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
       child: Padding(
         padding: EdgeInsets.all(8.0),
-        child: StreamBuilder<DocumentSnapshot>(
-          stream: Firestore.instance.collection("orders").document(orderId).snapshots(),
+        child: StreamBuilder<OrderData>(
+          stream: orderDAO.getStreamOrder(orderId: orderId),
           builder: (context,snapshot){
             if(!snapshot.hasData){
               return Center(
                 child: CircularProgressIndicator(),
               );
             }
-            int status = snapshot.data['status'];
+            int status = snapshot.data.status;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text("Código do pedido: ${snapshot.data.documentID}", style: TextStyle(fontWeight: FontWeight.bold),),
+                Text("Código do pedido: ${snapshot.data.id}", style: TextStyle(fontWeight: FontWeight.bold),),
                 SizedBox(height: 4.0,),
                 Text(_buildProductsText(snapshot.data)),
                 SizedBox(height: 4.0,),
@@ -60,12 +61,12 @@ class OrderTile extends StatelessWidget {
     );
   }
 
-  String _buildProductsText(DocumentSnapshot snapshot){
+  String _buildProductsText(OrderData order){
     String text = "Descrição:\n";
-    for(LinkedHashMap p in snapshot.data["products"]){
-      text += "${p['amount']} x ${p['product']['title']} R\$ ${p['product']['price'].toStringAsFixed(2)}\n";
+    for(CartProduct p in order.products){
+      text += "${p.amount} x ${p.product.title} R\$ ${p.product.price.toStringAsFixed(2)}\n";
     }
-    text += "Total: R\$ ${snapshot.data['totalPrice'].toStringAsFixed(2)}";
+    text += "Total: R\$ ${order.totalPrice.toStringAsFixed(2)}";
     return text;
 
   }

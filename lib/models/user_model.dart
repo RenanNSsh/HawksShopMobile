@@ -67,16 +67,15 @@ class UserModel extends Model{
     return firebaseUser != null;
   }
 
-  Future<Null> _saveUserData(Map<String, dynamic> userData) {
+  Future<Null> _saveUserData(Map<String, dynamic> userData) async{
     this.userData = userData;
-    return _userDao.saveUserData(userId: firebaseUser.uid, userData: userData);
+    return await _userDao.saveUserData(userId: firebaseUser.uid, userData: userData);
   }
 
   void signOut() async {
     await _auth.signOut();
     userData = Map();
     firebaseUser = null;
-
     notifyListeners();
   }
 

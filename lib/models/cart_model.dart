@@ -1,7 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hawks_shop/dao/cart_dao.dart';
+import 'package:hawks_shop/dao/order_dao.dart';
+import 'package:hawks_shop/dao/user_dao.dart';
 import 'package:hawks_shop/datas/cart_product.dart';
+import 'package:hawks_shop/datas/order_data.dart';
 import 'package:hawks_shop/models/user_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -12,7 +14,10 @@ class CartModel extends Model{
 
   String cuponCode;
   int discountPercentage = 0;
+
   final CartDAO _cartDAO = CartDAO(); 
+  final OrderDAO _orderDAO = OrderDAO();
+  final UserDAO _userDAO = UserDAO();
 
   List<CartProduct> products;
 
@@ -106,22 +111,17 @@ class CartModel extends Model{
     double shipPrice = getShipPrice();
     double discount = getDiscount();
 
-    DocumentReference refOrder = await Firestore.instance.collection("orders").add(
-      {
+    OrderData orderData = OrderData.fromMap({
         "clientID": user.firebaseUser.uid,
-        "products": products.map((cartProduct) => cartProduct.toMap()).toList(),
+        "products": products.map((product) => product.toMap()),
         "shipPrice": shipPrice,
         "discount": discount,
         "totalPrice": productsPrice - discount + shipPrice,
         "status": 1
-      }
-    );
+      });
+    String orderId = await _orderDAO.addOrder(orderData: orderData);
 
-    await Firestore.instance.collection("users").document(user.firebaseUser.uid)
-             .collection("orders").document(refOrder.documentID).setData(
-              {
-                "orderId": refOrder.documentID
-              });
+    await _userDAO.saveOrder(userId: user.firebaseUser.uid, orderId: orderId);
     await _cartDAO.removeProducts(userId: user.firebaseUser.uid);
 
     products.clear();
@@ -130,7 +130,7 @@ class CartModel extends Model{
     isLoading = false;
     notifyListeners();
 
-    return refOrder.documentID;
+    return orderId;
 
   }
 }

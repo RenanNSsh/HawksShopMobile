@@ -14,16 +14,24 @@ class CartProduct{
 
   CartProduct();
 
-  CartProduct.fromDocument(DocumentSnapshot document){
-    cartId = document.documentID;
-    categoryId = document.data["categoryId"];
-    productId = document.data["productId"];
-    amount = document.data["amount"];
-    size = document.data["size"];
+  CartProduct.fromMap(Map<String, dynamic> products){
+    cartId = products["cartId"];
+    categoryId = products["categoryId"];
+    productId = products["productId"];
+    amount = products["amount"];
+    product = ProductData.fromMap(Map<String, dynamic>.from(products["product"]));
+    size = products["size"];
+
+  }
+
+  factory CartProduct.fromDocument(DocumentSnapshot document){
+    document.data["cartId"] = document.documentID;
+    return CartProduct.fromMap(document.data);
   }
 
   Map<String, dynamic> toMap(){
     return {
+      "cartId": cartId,
       "categoryId": categoryId,
       "productId": productId,
       "amount": amount,

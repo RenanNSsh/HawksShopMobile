@@ -12,13 +12,18 @@ class ProductData {
   List images;
   List sizes;
 
-  ProductData.fromFirebaseDocument(DocumentSnapshot document){
-    id = document.documentID;
-    title = document.data["title"];
-    description = document.data["description"];
-    price = document.data["price"] != null ? double.parse(document.data["price"].toString()) : null;
-    images = document.data["images"];
-    sizes = document.data["sizes"];
+  ProductData.fromMap(Map<String, dynamic> productMap){
+    id = productMap["id"];
+    title = productMap["title"];
+    description = productMap["description"];
+    price = productMap["price"] != null ? double.parse(productMap["price"].toString()) : null;
+    images = productMap["images"];
+    sizes = productMap["sizes"];
+  }
+
+  factory ProductData.fromFirebaseDocument(DocumentSnapshot document){
+    document.data["id"] = document.documentID;
+    return ProductData.fromMap(document.data);
   }
 
   Map<String, dynamic> toResumedMap() {

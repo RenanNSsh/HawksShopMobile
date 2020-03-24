@@ -1,12 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hawks_shop/models/cart_model.dart';
+import 'package:hawks_shop/services/cupon_service.dart';
 
 class DiscountCard extends StatelessWidget {
   const DiscountCard();
 
   @override
   Widget build(BuildContext context) {
+    CuponService cuponService = CuponService();
     return Card(
       child: ExpansionTile(
         title: Text(
@@ -24,28 +25,22 @@ class DiscountCard extends StatelessWidget {
                 border: OutlineInputBorder(),
                 hintText: "Digite seu Cupom"
               ),
-              initialValue: CartModel.of(context).cuponCode ?? "",
+              initialValue: CartModel.of(context).cupon != null ? CartModel.of(context).cupon.cuponCode : "",
               onFieldSubmitted: (text){
-                Firestore.instance.collection("cupons").document(text).get().then((docCupon){
-                  if(docCupon.data != null){
-                    CartModel.of(context).setCupom(text, docCupon.data['percent']);
+                cuponService.getCupon(text).then((cupon){
+                  if(cupon != null){
+                    CartModel.of(context).setCupom(cupon);
                     Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text("Desconto de ${docCupon.data['percent']}% aplicado com suceso"),
+                      content: Text("Desconto de ${cupon.percent}% aplicado com suceso"),
                       backgroundColor: Theme.of(context).primaryColor,
                     ));
                   }else{
-                    CartModel.of(context).setCupom(null, 0);
+                    CartModel.of(context).setCupom(null);
                     Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text("Cupom Inválido"),
                       backgroundColor: Colors.redAccent,
                     ));
                   }
-                }).catchError((){
-
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text("Ocorreu um erro ao aplicar cupom"),
-                      backgroundColor: Colors.redAccent,
-                    ));
                 });
               },
             ),

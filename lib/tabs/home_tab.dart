@@ -1,6 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:hawks_shop/datas/home_data.dart';
+import 'package:hawks_shop/services/home_service.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class HomeTab extends StatelessWidget {
@@ -20,6 +21,7 @@ class HomeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    HomeService homeService = HomeService();
     return Stack(
       children: <Widget>[
         _buildBodyBack(),
@@ -35,8 +37,8 @@ class HomeTab extends StatelessWidget {
                 centerTitle: true,
               ),
             ),
-            FutureBuilder<QuerySnapshot>(
-              future: Firestore.instance.collection("home").orderBy("pos").getDocuments(),
+            FutureBuilder<List<HomeData>>(
+              future: homeService.getHomeData(),
               builder: (context, snapshot){
                 if(!snapshot.hasData){
                   return SliverToBoxAdapter(
@@ -53,13 +55,13 @@ class HomeTab extends StatelessWidget {
                     crossAxisCount: 2,
                     mainAxisSpacing: 1.0,
                     crossAxisSpacing: 1.0,
-                    staggeredTiles: snapshot.data.documents.map((document){
-                      return StaggeredTile.count(document.data["x"], document.data["y"]);
+                    staggeredTiles: snapshot.data.map((homeDataDoc){
+                      return StaggeredTile.count(homeDataDoc.x, homeDataDoc.y);
                     }).toList(),
-                    children: snapshot.data.documents.map((document){
+                    children: snapshot.data.map((homeDataDoc){
                       return FadeInImage.memoryNetwork(
                         placeholder: kTransparentImage,
-                        image: document.data["image"],
+                        image: homeDataDoc.image,
                         fit: BoxFit.cover,
                       );
                     }).toList(),

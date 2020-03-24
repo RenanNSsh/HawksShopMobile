@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hawks_shop/services/user_service.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class UserModel extends Model{
@@ -8,6 +8,7 @@ class UserModel extends Model{
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser firebaseUser;
   Map<String, dynamic> userData = Map();
+  final UserService _userService = UserService();
 
   bool _isLoading = false;
 
@@ -68,14 +69,13 @@ class UserModel extends Model{
 
   Future<Null> _saveUserData(Map<String, dynamic> userData) async{
     this.userData = userData;
-    await Firestore.instance.collection("users").document(firebaseUser.uid).setData(userData);
+    return await _userService.saveUserData(userId: firebaseUser.uid, userData: userData);
   }
 
   void signOut() async {
     await _auth.signOut();
     userData = Map();
     firebaseUser = null;
-
     notifyListeners();
   }
 
@@ -85,8 +85,7 @@ class UserModel extends Model{
     }
     if(firebaseUser != null){
       if(userData["name"] == null){
-        DocumentSnapshot docUser = await Firestore.instance.collection("users").document(firebaseUser.uid).get();
-        userData = docUser.data;
+        userData = await _userService.getUser(userId: firebaseUser.uid);
       }
     }
     notifyListeners();

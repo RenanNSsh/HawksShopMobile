@@ -1,5 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hawks_shop/datas/place_data.dart';
+import 'package:hawks_shop/services/place_service.dart';
 import 'package:hawks_shop/tiles/place_tile.dart';
 
 class PlacesTab extends StatelessWidget {
@@ -7,8 +8,9 @@ class PlacesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<QuerySnapshot>(
-      future: Firestore.instance.collection("places").getDocuments(),
+    PlaceService placeService = PlaceService();
+    return FutureBuilder<List<PlaceData>>(
+      future: placeService.getPlaces(),
       builder: (context, snapshot){
         if(!snapshot.hasData){
           return Center(
@@ -16,7 +18,7 @@ class PlacesTab extends StatelessWidget {
           );
         }
         return ListView(
-          children: snapshot.data.documents.map((doc) => PlaceTile(doc)).toList(),
+          children: snapshot.data.map((doc) => PlaceTile(doc)).toList(),
         );
       },
     );

@@ -1,22 +1,24 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hawks_shop/dao/product_dao.dart';
+import 'package:hawks_shop/datas/category_data.dart';
 import 'package:hawks_shop/datas/product_data.dart';
 import 'package:hawks_shop/tiles/product/product_grid_tile.dart';
 import 'package:hawks_shop/tiles/product/product_list_tile.dart';
 
 class CategoryScreen extends StatelessWidget {
 
-  const CategoryScreen(this.snapshot);
+  final CategoryData category; 
+  CategoryScreen(this.category);
 
-  final DocumentSnapshot snapshot;
 
   @override
   Widget build(BuildContext context) {
+    final ProductDAO productDAO = ProductDAO();
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(snapshot.data["title"]),
+          title: Text(category.title),
           centerTitle: true,
           bottom: TabBar(
             tabs: <Widget>[
@@ -25,8 +27,8 @@ class CategoryScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: FutureBuilder<QuerySnapshot>(
-          future: Firestore.instance.collection("products").document(snapshot.documentID).collection("items").getDocuments(),
+        body: FutureBuilder<List<ProductData>>(
+          future: productDAO.getProducts(category.id),
           builder: (context, snapshot){
             if(!snapshot.hasData){
               return Center(child: CircularProgressIndicator(),);
@@ -34,7 +36,7 @@ class CategoryScreen extends StatelessWidget {
             return TabBarView(
               physics: NeverScrollableScrollPhysics(),
               children: <Widget>[
-                snapshot.data.documents.length != 0 ? GridView.builder(
+                snapshot.data.length != 0 ? GridView.builder(
                   padding: EdgeInsets.all(4.0),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
@@ -42,20 +44,19 @@ class CategoryScreen extends StatelessWidget {
                     crossAxisSpacing: 4.0,
                     childAspectRatio: 0.65
                   ),
-                  itemCount: snapshot.data.documents.length,
+                  itemCount: snapshot.data.length,
                   itemBuilder: (context, index){
-                      ProductData productData = ProductData.fromFirebaseDocument(snapshot.data.documents[index]);
-                      productData.category = this.snapshot.documentID;
+                      ProductData productData = snapshot.data[index];
+                      productData.category = category.id;
                       return ProductGridTile(productData);
-                    
                   }
                 ): Center(child: Text("Não há nenhum item desta categoria no momento", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0),)),
-                snapshot.data.documents.length != 0 ?ListView.builder(
+                snapshot.data.length != 0 ? ListView.builder(
                   padding: EdgeInsets.all(4.0),
-                  itemCount: snapshot.data.documents.length,
+                  itemCount: snapshot.data.length,
                   itemBuilder: (context, index){
-                    ProductData productData = ProductData.fromFirebaseDocument(snapshot.data.documents[index]);
-                    productData.category = this.snapshot.documentID;
+                    ProductData productData = snapshot.data[index];
+                    productData.category = category.id;
                     return ProductListTile(productData);
                 }): Center(child: Text("Não há nenhum item desta categoria no momento", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0),)),
               ],

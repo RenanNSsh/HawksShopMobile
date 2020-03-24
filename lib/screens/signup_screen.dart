@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hawks_shop/datas/user_data.dart';
 import 'package:hawks_shop/models/user_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -106,12 +107,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       onPressed: (){
                         if(_formKey.currentState.validate()){
 
-                          Map<String,dynamic> userData = {
+                          Map<String,dynamic> userMap = {
                             "name": _nameController.text.trim(),
                             "email": _emailController.text.trim(),
                             "address": _addressController.text.trim()
                           };
-                          model.signUp(userData: userData, password: _passwordController.text, onSuccess: _onSuccess, onError: _onError);
+                          UserData user = UserData.fromMap(userMap);
+                          model.signUp(userData: user, password: _passwordController.text).then(_onSuccess).catchError(_onError);
                         }
                       },
                     ),
@@ -125,7 +127,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void _onSuccess(){
+  Future<void> _onSuccess(_){
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
         content: Text("Usuário criado com sucesso!"),
@@ -138,7 +140,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
   }
 
-  void _onError(){
+  Future<void> _onError(){
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
         content: Text("Falha ao criar usuário!"),

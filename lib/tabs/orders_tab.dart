@@ -11,7 +11,7 @@ class OrdersTab extends StatelessWidget {
   Widget build(BuildContext context) {
     UserService userService = UserService();
     if(UserModel.of(context).isLoggedIn()){
-      String userId = UserModel.of(context).firebaseUser.uid;
+      String userId = UserModel.of(context).userData.id;
       
       return FutureBuilder<List<String>>(
         future: userService.getOrders(userId: userId),

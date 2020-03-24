@@ -1,7 +1,9 @@
+import 'dart:async';
+import 'package:flutter/services.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hawks_shop/models/user_model.dart';
 import 'package:hawks_shop/screens/signup_screen.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 class LoginScreen extends StatefulWidget {
 
@@ -73,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         duration: Duration(seconds: 2),
                       ));
                     }else{
-                      model.recoverPass(_emailController.text);
+                      model.recoverPassword(email: _emailController.text);
                       _scaffoldKey.currentState.showSnackBar(SnackBar(
                         content: Text("Confira seu e-mail!"),
                         backgroundColor: Theme.of(context).primaryColor,
@@ -91,9 +93,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text("Entrar", style: TextStyle(fontSize: 18.0),),
                     textColor: Colors.white,
                     color: Theme.of(context).primaryColor,
-                    onPressed: (){
+                    onPressed: () async{
                       if(_formKey.currentState.validate()){
-                        model.signIn(email: _emailController.text.trim(), password: _passwordController.text, onError: _onError, onSuccess: _onSuccess);
+                        try{
+                          await model.signIn(email: _emailController.text.trim(), password: _passwordController.text);
+                          _onSuccess();
+                        }catch(Exception){
+                          _onError(Exception);
+                        }
                       }
                     },
                   ),
@@ -107,13 +114,21 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _onSuccess(){
+  FutureOr<void> _onSuccess(){
     Navigator.of(context).pop();
   }
 
-  void _onError(){
+  void _onError(PlatformException error){
+    String text = "Ocorreu um erro inexperado entrar";
+    switch(error.code){
+      case "ERROR_TOO_MANY_REQUESTS":
+        text = "Muitos erros consecutivos :( Tente novamente mais tarde.";
+        break;
+      case "ERROR_WRONG_PASSWORD":
+        text = "Usuário ou senha inválidos";
+    }
     _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text("Falha ao entrar"),
+      content: Text(text),
       backgroundColor: Colors.redAccent,
       duration: Duration(seconds: 2),
     ));

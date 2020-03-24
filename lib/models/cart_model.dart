@@ -31,7 +31,7 @@ class CartModel extends Model{
 
   void _loadCartItens() async{
     if(products == null && user.isLoggedIn()){
-      products = await _cartService.getProducts(userId: user.firebaseUser.uid);
+      products = await _cartService.getProducts(userId: user.userData.id);
       notifyListeners();
     }
   }
@@ -42,7 +42,7 @@ class CartModel extends Model{
       incProduct(existingCartProduct);
     }catch(IterableElementError){
       products.add(cartProduct);
-      cartProduct.cartId = await _cartService.addCartItem(userId: user.firebaseUser.uid, cartProduct: cartProduct);
+      cartProduct.cartId = await _cartService.addCartItem(userId: user.userData.id, cartProduct: cartProduct);
       notifyListeners();
     }
   }
@@ -55,18 +55,18 @@ class CartModel extends Model{
 
   void incProduct(CartProduct cartProduct) async{
     cartProduct.amount++;
-    await _cartService.updateProduct(userId: user.firebaseUser.uid, cartProduct: cartProduct);
+    await _cartService.updateProduct(userId: user.userData.id, cartProduct: cartProduct);
     notifyListeners();
   }
 
   void decProduct(CartProduct cartProduct) async {
     cartProduct.amount--;
-    await _cartService.updateProduct(userId: user.firebaseUser.uid, cartProduct: cartProduct);
+    await _cartService.updateProduct(userId: user.userData.id, cartProduct: cartProduct);
     notifyListeners();
   }
 
   void removeCartItem(CartProduct cartProduct) async {
-    await _cartService.removeProduct(userId: user.firebaseUser.uid, cartProduct: cartProduct);
+    await _cartService.removeProduct(userId: user.userData.id, cartProduct: cartProduct);
     products.remove(cartProduct);
     notifyListeners();
   }
@@ -109,7 +109,7 @@ class CartModel extends Model{
     double discount = getDiscount();
 
     OrderData orderData = OrderData.fromMap({
-        "clientID": user.firebaseUser.uid,
+        "clientID": user.userData.id,
         "products": products.map((product) => product.toMap()),
         "shipPrice": shipPrice,
         "discount": discount,
@@ -118,8 +118,8 @@ class CartModel extends Model{
       });
     String orderId = await _orderService.addOrder(orderData: orderData);
 
-    await _userService.saveOrder(userId: user.firebaseUser.uid, orderId: orderId);
-    await _cartService.removeProducts(userId: user.firebaseUser.uid);
+    await _userService.saveOrder(userId: user.userData.id, orderId: orderId);
+    await _cartService.removeProducts(userId: user.userData.id);
 
     products.clear();
     cupon = CuponData(cuponCode: '',percent: 0);

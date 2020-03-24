@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hawks_shop/dao/product_dao.dart';
 import 'package:hawks_shop/datas/category_data.dart';
 import 'package:hawks_shop/datas/product_data.dart';
+import 'package:hawks_shop/services/product_service.dart';
 import 'package:hawks_shop/tiles/product/product_grid_tile.dart';
 import 'package:hawks_shop/tiles/product/product_list_tile.dart';
 
@@ -13,7 +13,7 @@ class CategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ProductDAO productDAO = ProductDAO();
+    final ProductService productService = ProductService();
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -28,7 +28,7 @@ class CategoryScreen extends StatelessWidget {
           ),
         ),
         body: FutureBuilder<List<ProductData>>(
-          future: productDAO.getProducts(category.id),
+          future: productService.getProducts(category.id),
           builder: (context, snapshot){
             if(!snapshot.hasData){
               return Center(child: CircularProgressIndicator(),);

@@ -31,14 +31,16 @@ class UserModel extends Model{
     _loadCurrentUser();
   }
 
-  Future<void> signUp({@required UserData userData, @required String password}){
+  Future<void> signUp({@required UserData userData, @required String password}) async{
     isLoading = true;
-    return _authService.signUp(userData: userData, password: password).then((user){
+    try{
+      UserData user = await _authService.signUp(userData: userData, password: password);
       this.userData = user;
-    }).whenComplete((){
-        isLoading = false;
-      }
-    );
+    }catch(error){
+      throw(error);
+    }finally{
+      isLoading = false;
+    }
   }
 
   Future<void> signIn({@required String email, @required String password}) async {

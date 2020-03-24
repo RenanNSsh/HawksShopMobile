@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hawks_shop/models/user_model.dart';
 import 'package:hawks_shop/screens/login_screen.dart';
 import 'package:hawks_shop/tiles/drawer_tile.dart';
+import 'package:hawks_shop/widgets/gradient_background.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -10,25 +11,12 @@ class CustomDrawer extends StatelessWidget {
 
   CustomDrawer(this.pageController);
 
-   Widget _buildBackgroundDrawer() => Container(
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [
-          Color.fromARGB(255, 211, 118, 130),
-          Color.fromARGB(255,253, 181, 168)
-        ],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter
-      )
-    ),
-  );
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Stack(
         children: <Widget>[
-          _buildBackgroundDrawer(),
+          GradientBackground(),
           ListView(
             padding: EdgeInsets.only(left:32.0, top: 30.0),
             children: <Widget>[

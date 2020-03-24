@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hawks_shop/models/cart_model.dart';
 import 'package:hawks_shop/models/user_model.dart';
-import 'package:hawks_shop/screens/home_screen.dart';
+import 'package:hawks_shop/screens/router_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 void main() => runApp(MyApp());
@@ -13,21 +13,29 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScopedModel<UserModel>(
       model: UserModel(),
-      child: ScopedModelDescendant<UserModel>(
+      child: _scopedModelDescendant()
+    );
+  }
+
+  Widget _scopedModelDescendant(){
+    return ScopedModelDescendant<UserModel>(
         builder: (context, child, model){
           return ScopedModel<CartModel>(
             model: CartModel(model),
-            child: MaterialApp(
-              title: 'Hawks Shop',
-              theme: ThemeData(
-                primaryColor: Colors.purple,
-                
-              ),
-              home: HomeScreen(),
-              debugShowCheckedModeBanner: false,
-            ));
+            child: _app()
+          );
         },
-      )
+      );
+  }
+
+  Widget _app(){
+    return MaterialApp(
+      title: 'Hawks Shop',
+      theme: ThemeData(
+        primaryColor: Color.fromARGB(255, 130, 118, 211),
+      ),
+      home: RouterScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

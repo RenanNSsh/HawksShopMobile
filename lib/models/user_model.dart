@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:hawks_shop/datas/user_data.dart';
 import 'package:hawks_shop/services/auth_service.dart';
-import 'package:hawks_shop/services/user_service.dart';
 
 class UserModel extends Model{
 
   UserData userData;
   final AuthService _authService = AuthService();
-  final UserService _userService = UserService();
 
   bool _isLoading = false;
 

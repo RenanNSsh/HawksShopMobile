@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hawks_shop/models/cart_model.dart';
 
 class ShipCard extends StatelessWidget {
   const ShipCard();
@@ -22,8 +21,7 @@ class ShipCard extends StatelessWidget {
                 border: OutlineInputBorder(),
                 hintText: "Digite seu CEP"
               ),
-              onFieldSubmitted: (text){
-                
+              onFieldSubmitted: (text) {
               },
             ),
           )

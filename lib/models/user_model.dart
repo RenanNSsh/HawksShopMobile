@@ -1,13 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hawks_shop/services/user_service.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:hawks_shop/datas/user_data.dart';
+import 'package:hawks_shop/services/auth_service.dart';
+import 'package:hawks_shop/services/user_service.dart';
 
 class UserModel extends Model{
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseUser firebaseUser;
-  Map<String, dynamic> userData = Map();
+  UserData userData;
+  final AuthService _authService = AuthService();
   final UserService _userService = UserService();
 
   bool _isLoading = false;
@@ -31,63 +31,44 @@ class UserModel extends Model{
     _loadCurrentUser();
   }
 
-  void signUp({@required Map<String, dynamic> userData, @required String password, @required VoidCallback onSuccess, @required VoidCallback onError}){
+  Future<void> signUp({@required UserData userData, @required String password}){
     isLoading = true;
-    _auth.createUserWithEmailAndPassword(email: userData["email"], password: password).then((user) async {
-      firebaseUser = user;
-      await _saveUserData(userData);
-      onSuccess();
-    }).catchError((error){
-      onError();
+    return _authService.signUp(userData: userData, password: password).then((user){
+      this.userData = user;
     }).whenComplete((){
-      isLoading = false;
-    });
-
+        isLoading = false;
+      }
+    );
   }
 
-  void signIn({@required String email, @required String password, @required VoidCallback onSuccess, @required VoidCallback onError}) async {
+  Future<void> signIn({@required String email, @required String password}) async {
     isLoading = true;
-    _auth.signInWithEmailAndPassword(email: email, password: password).then((user) async {
-      firebaseUser = user;
-      await _loadCurrentUser();
-      onSuccess();
-    }).catchError((error){
-      onError();
-    })
-    .whenComplete((){
+    try{
+      UserData user = await _authService.login(email: email, password: password);
+      this.userData = user;
+    }catch(error){
+      throw(error);
+    }finally{
       isLoading = false;
-    });
+    }
   }
 
-  void recoverPass(String email){
-    _auth.sendPasswordResetEmail(email: email);
+  void recoverPassword({@required String email}){
+    _authService.recoverPassword(email: email);
   }
 
   bool isLoggedIn(){
-    return firebaseUser != null;
+    return userData != null;
   }
 
-  Future<Null> _saveUserData(Map<String, dynamic> userData) async{
-    this.userData = userData;
-    return await _userService.saveUserData(userId: firebaseUser.uid, userData: userData);
-  }
-
-  void signOut() async {
-    await _auth.signOut();
-    userData = Map();
-    firebaseUser = null;
+  Future<void> signOut() async {
+    await _authService.signOut();
+    userData = null;
     notifyListeners();
   }
 
-  Future<Null> _loadCurrentUser() async {
-    if(firebaseUser == null){
-      firebaseUser = await _auth.currentUser();
-    }
-    if(firebaseUser != null){
-      if(userData["name"] == null){
-        userData = await _userService.getUser(userId: firebaseUser.uid);
-      }
-    }
+  Future<void> _loadCurrentUser() async {
+    await _authService.loadCurrentUser();
     notifyListeners();
   }
 }

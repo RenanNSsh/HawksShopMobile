@@ -23,7 +23,6 @@ class HomeScreen extends StatelessWidget {
         ),
         Scaffold(
           drawer: CustomDrawer(_pageController),
-          
           floatingActionButton: CartButton(),
           appBar: AppBar(
             backgroundColor: Theme.of(context).primaryColor,

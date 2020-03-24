@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hawks_shop/datas/user_data.dart';
 import 'package:hawks_shop/models/user_model.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -104,7 +105,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: Text("Cadastrar", style: TextStyle(fontSize: 18.0),),
                       textColor: Colors.white,
                       color: Theme.of(context).primaryColor,
-                      onPressed: (){
+                      onPressed: () async{
                         if(_formKey.currentState.validate()){
 
                           Map<String,dynamic> userMap = {
@@ -113,7 +114,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             "address": _addressController.text.trim()
                           };
                           UserData user = UserData.fromMap(userMap);
-                          model.signUp(userData: user, password: _passwordController.text).then(_onSuccess).catchError(_onError);
+                          try{
+                            await model.signUp(userData: user, password: _passwordController.text);
+                            _onSuccess();
+                          }catch(error){
+                            _onError(error);
+                          }
                         }
                       },
                     ),
@@ -127,7 +133,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Future<void> _onSuccess(_){
+  void _onSuccess(){
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
         content: Text("Usuário criado com sucesso!"),
@@ -140,10 +146,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
   }
 
-  Future<void> _onError(){
+  void _onError(PlatformException error){
+    String errorText = "Ocorreu uma falha inesperada";
+    switch(error.code){
+      case "ERROR_EMAIL_ALREADY_IN_USE":
+        errorText = "Este e-mail já está cadastrado.";
+    }
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
-        content: Text("Falha ao criar usuário!"),
+        content: Text(errorText),
         backgroundColor: Colors.redAccent,
         duration: Duration(seconds: 2),
       )

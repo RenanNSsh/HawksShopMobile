@@ -10,24 +10,29 @@ class ProductTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final CategoryService categoryService = CategoryService();
+
     return FutureBuilder<List<CategoryData>>(
       future: categoryService.getCategories(),
       builder: (context, snapshot){
         if(!snapshot.hasData){
           return Center(child: CircularProgressIndicator(),);
         }
-        var dividedTiles = ListTile.divideTiles(tiles: snapshot.data.map(
-            (document){
-              return CategoryTile(document);
-            }
-          ).toList(),
-          color: Colors.grey
-        ).toList();
-        return ListView(
-          children: dividedTiles
-        );
+        var tiles = snapshot.data.map(_categoryDataToTile).toList();
+        return ListView(children: _dividedTiles(tiles:tiles));
       },
     );
+  }
+  
+  CategoryTile _categoryDataToTile(CategoryData data){
+    return CategoryTile(data);
+  }
+
+  List<Widget> _dividedTiles({List<Widget> tiles}){
+    return ListTile.divideTiles(
+      tiles: tiles,
+      color: Colors.red
+    ).toList();
   }
 }

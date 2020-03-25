@@ -1,6 +1,11 @@
+//Flutter
 import 'package:flutter/material.dart';
-import 'package:hawks_shop/models/cart_model.dart';
+
+//Dependencies
 import 'package:scoped_model/scoped_model.dart';
+
+//Project
+import 'package:hawks_shop/models/cart_model.dart';
 
 class CartPrice extends StatelessWidget {
 

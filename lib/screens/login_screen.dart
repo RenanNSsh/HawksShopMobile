@@ -1,7 +1,12 @@
+//Flutter/Dart
 import 'dart:async';
-import 'package:flutter/services.dart';
-import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+//Dependencies
+import 'package:scoped_model/scoped_model.dart';
+
+//Project
 import 'package:hawks_shop/models/user_model.dart';
 import 'package:hawks_shop/screens/signup_screen.dart';
 

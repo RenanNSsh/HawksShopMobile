@@ -1,4 +1,7 @@
+//Dependencies
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+//Project
 import 'package:hawks_shop/datas/place_data.dart';
 
 class PlaceService{

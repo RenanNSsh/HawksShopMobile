@@ -1,10 +1,15 @@
+// Flutter
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
+// Dependencies
+import 'package:transparent_image/transparent_image.dart';
+
+//Project
 import 'package:hawks_shop/datas/home_data.dart';
 import 'package:hawks_shop/services/home_service.dart';
 import 'package:hawks_shop/widgets/gradient_background.dart';
 import 'package:hawks_shop/widgets/shop_sliver_appbar.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class HomeTab extends StatelessWidget {
 

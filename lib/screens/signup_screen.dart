@@ -1,8 +1,13 @@
+//Flutter
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+//Dependencies
+import 'package:scoped_model/scoped_model.dart';
+
+//Project
 import 'package:hawks_shop/datas/user_data.dart';
 import 'package:hawks_shop/models/user_model.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 class SignUpScreen extends StatefulWidget {
 

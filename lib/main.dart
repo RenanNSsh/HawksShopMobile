@@ -1,8 +1,13 @@
+//Flutter
 import 'package:flutter/material.dart';
+
+//Dependencies
+import 'package:scoped_model/scoped_model.dart';
+
+//Project
 import 'package:hawks_shop/models/cart_model.dart';
 import 'package:hawks_shop/models/user_model.dart';
 import 'package:hawks_shop/screens/router_screen.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 void main() => runApp(MyApp());
 

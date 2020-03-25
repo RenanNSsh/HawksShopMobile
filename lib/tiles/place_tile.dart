@@ -1,6 +1,11 @@
+//Flutter
 import 'package:flutter/material.dart';
-import 'package:hawks_shop/datas/place_data.dart';
+
+//Dependencies
 import 'package:url_launcher/url_launcher.dart';
+
+//Project
+import 'package:hawks_shop/datas/place_data.dart';
 
 class PlaceTile extends StatelessWidget {
   final PlaceData place;

@@ -1,5 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
+//Flutter
 import 'package:flutter/material.dart';
+
+//Dependencies
+import 'package:firebase_auth/firebase_auth.dart';
+
+//Project
 import 'package:hawks_shop/datas/user_data.dart';
 import 'package:hawks_shop/services/user_service.dart';
 

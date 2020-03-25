@@ -1,7 +1,11 @@
+//Flutter/Dart
 import 'dart:async';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+//Dependencies
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+//Project
 import 'package:hawks_shop/datas/order_data.dart';
 
 class OrderService{

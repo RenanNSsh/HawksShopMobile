@@ -1,4 +1,10 @@
+//Flutter
 import 'package:flutter/material.dart';
+
+//Dependencies
+import 'package:scoped_model/scoped_model.dart';
+
+//Project
 import 'package:hawks_shop/datas/cart_product.dart';
 import 'package:hawks_shop/datas/cupon_data.dart';
 import 'package:hawks_shop/datas/order_data.dart';
@@ -6,7 +12,6 @@ import 'package:hawks_shop/models/user_model.dart';
 import 'package:hawks_shop/services/cart_service.dart';
 import 'package:hawks_shop/services/order_service.dart';
 import 'package:hawks_shop/services/user_service.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 class CartModel extends Model{
 

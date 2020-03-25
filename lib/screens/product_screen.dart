@@ -1,5 +1,10 @@
-import 'package:carousel_pro/carousel_pro.dart';
+//Flutter
 import 'package:flutter/material.dart';
+
+//Dependencies
+import 'package:carousel_pro/carousel_pro.dart';
+
+//Project
 import 'package:hawks_shop/datas/cart_product.dart';
 import 'package:hawks_shop/datas/product_data.dart';
 import 'package:hawks_shop/models/cart_model.dart';

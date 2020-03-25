@@ -1,4 +1,10 @@
+//Flutter
 import 'package:flutter/material.dart';
+
+//Dependencies
+import 'package:scoped_model/scoped_model.dart';
+
+//Project
 import 'package:hawks_shop/models/cart_model.dart';
 import 'package:hawks_shop/models/user_model.dart';
 import 'package:hawks_shop/screens/login_screen.dart';
@@ -7,7 +13,6 @@ import 'package:hawks_shop/tiles/cart_tile.dart';
 import 'package:hawks_shop/widgets/cart_price.dart';
 import 'package:hawks_shop/widgets/discount_card.dart';
 import 'package:hawks_shop/widgets/ship_card.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({Key key}) : super(key: key);

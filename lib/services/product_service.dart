@@ -1,5 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+//Flutter
 import 'package:flutter/material.dart';
+
+//Dependencies
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+//Project
 import 'package:hawks_shop/datas/product_data.dart';
 
 class ProductService{

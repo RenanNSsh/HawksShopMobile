@@ -1,5 +1,10 @@
+//Flutter
 import 'package:flutter/material.dart';
+
+//Dependencies
 import 'package:flutter_svg/flutter_svg.dart';
+
+//Project
 import 'package:hawks_shop/datas/category_data.dart';
 import 'package:hawks_shop/screens/category_screen.dart';
 
